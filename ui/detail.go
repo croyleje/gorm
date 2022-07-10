@@ -86,6 +86,8 @@ func (m Model) detailView() string {
 	header := fmt.Sprintf("Details for \"%s\".", itemName)
 
 	var file string = cmd.GetTrashDir() + "files/" + m.list.SelectedItem().(item).Name
+	path := "Path: " + m.list.SelectedItem().(item).Path
+	path = m.styles.DetailsHeader.Render(path)
 
 	stats, _ := exec.Command("stat", file).Output()
 	statsString := string(stats)
@@ -102,5 +104,5 @@ func (m Model) detailView() string {
 
 	return lipgloss.NewStyle().
 		MarginTop(1).
-		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", render, "\n", formattedStats, "\n", help))
+		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", render, "\n", path, formattedStats, "\n", help))
 }
