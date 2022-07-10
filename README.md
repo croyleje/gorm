@@ -6,7 +6,7 @@ lacking in other cli/tui trash applications.
 
 ## Features
 * Automatically `shreds` sensitive files and user definable files by extension
-  and name, including.
+  and name, including.*
   * .key
   * .kbx
   * .gpg
@@ -15,7 +15,7 @@ lacking in other cli/tui trash applications.
   * id_ecdsa_sk
   * id_ed25519
   * id_ed25519_sk
-* Fuzzy search by filename and path. (Partially implemented)
+* Fuzzy search by filename and path.*
 * Local or original path restoration.
 * Detail view including.
   * Type
@@ -27,6 +27,15 @@ lacking in other cli/tui trash applications.
   * Last modified date
   * Last status change date
   * File creation date
+
+\* See TODO/BUGS and Unimplemented features list.
+
+## Unimplemented features
+* Prompt and auto generate new mount point trash files.
+* Link handling
+  * Prompt when trashing links (symbolic & hard).
+  * Prompt when restoring links.
+  * Add link icon to tui display.
 
 ## TODO / BUGS
 * BUG: FilterState bug PATCHED

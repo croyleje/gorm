@@ -2,11 +2,14 @@ package ui
 
 import (
 	"fmt"
+	"os/exec"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/croyleje/gorm/cmd"
 )
 
 type detailModel struct {
@@ -70,7 +73,6 @@ func detailUpdate(msg tea.Msg, m Model) (tea.Model, tea.Cmd) {
 func (m Model) detailView() string {
 	title := m.styles.Title.MarginLeft(2).Render("detail view")
 	help := lipgloss.NewStyle().MarginLeft(4).Render(m.detail.help.View(m.keyMap))
-	// i := m.list.SelectedItem().(item)
 
 	var itemName string
 
@@ -83,6 +85,14 @@ func (m Model) detailView() string {
 
 	header := fmt.Sprintf("Details for \"%s\".", itemName)
 
+	var file string = cmd.GetTrashDir() + "files/" + m.list.SelectedItem().(item).Name
+
+	stats, _ := exec.Command("stat", file).Output()
+	statsString := string(stats)
+	var formattedString string
+	_, formattedString, _ = strings.Cut(statsString, "\n")
+	formattedStats := m.styles.Details.Render(string(formattedString))
+
 	render := lipgloss.NewStyle().
 		MarginLeft(4).
 		Render(lipgloss.JoinHorizontal(
@@ -92,5 +102,5 @@ func (m Model) detailView() string {
 
 	return lipgloss.NewStyle().
 		MarginTop(1).
-		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", render, "\n", help))
+		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", render, "\n", formattedStats, "\n", help))
 }
