@@ -187,6 +187,10 @@ func listUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 			m.updateKeybindings()
 
 		case key.Matches(msg, m.keyMap.Detail):
+			if m.checkedSelected() > 1 {
+				cmd := m.list.NewStatusMessage("Select only one item at a time for detail view")
+				return m, cmd
+			}
 			m.state = details
 			m.keyMap.State = "details"
 			m.updateKeybindings()
@@ -217,6 +221,16 @@ func listUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 	return m, tea.Batch(cmds...)
 }
 
+func (m *Model) checkedSelected() int {
+	var r int = 0
+	for _, i := range m.list.Items() {
+		if i.(item).IsChecked {
+			r++
+		}
+	}
+	return r
+}
+
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if m.list.SettingFilter() {
 		m.keyMap.Enter.SetEnabled(false)
@@ -237,7 +251,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return listUpdate(msg, &m)
 
 	case deleting:
-		return deleteUpdate(msg, m)
+		return deleteUpdate(msg, &m)
 
 	case details:
 		return detailUpdate(msg, m)
