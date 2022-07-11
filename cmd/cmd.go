@@ -32,6 +32,7 @@ type Item struct {
 	Size         string
 	Path         string
 	DeletionDate string
+	IsChecked    bool
 }
 
 func GetEntries() ([]Item, error) {
@@ -53,6 +54,7 @@ func GetEntries() ([]Item, error) {
 			Size:         getSize(file),
 			Path:         getFullPath(file.Name()),
 			DeletionDate: getDeletionDate(file.Name()),
+			IsChecked:    false,
 		})
 	}
 

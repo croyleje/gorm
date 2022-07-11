@@ -17,6 +17,8 @@ type KeyMap struct {
 	Quit       key.Binding
 	ForceQuit  key.Binding
 
+	LocalRestore key.Binding
+
 	State string
 }
 
@@ -28,6 +30,10 @@ func (k KeyMap) ShortHelp() []key.Binding {
 
 	if k.State != "browsing" {
 		kb = append(kb, k.Cancel, k.ForceQuit)
+	}
+
+	if k.State == "restoring" {
+		kb = append(kb, k.LocalRestore)
 	}
 
 	return kb
@@ -55,7 +61,7 @@ func NewKeyMap() *KeyMap {
 		),
 		Select: key.NewBinding(
 			key.WithKeys(" "),
-			key.WithHelp(" ", "toggle secection"),
+			key.WithHelp(" ", "toggle selection"),
 		),
 		Enter: key.NewBinding(
 			key.WithKeys("enter"),
@@ -88,6 +94,10 @@ func NewKeyMap() *KeyMap {
 		ForceQuit: key.NewBinding(
 			key.WithKeys("ctrl+c"),
 			key.WithHelp("ctrl+c", "force quit"),
+		),
+		LocalRestore: key.NewBinding(
+			key.WithKeys("l"),
+			key.WithHelp("l", "restore file to current working directory"),
 		),
 	}
 }

@@ -5,8 +5,8 @@ import (
 	"io"
 
 	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/croyleje/gorm/list"
 	"github.com/croyleje/gorm/ui/keys"
 	"github.com/croyleje/gorm/ui/styles"
 )
@@ -36,7 +36,7 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 	title := d.styles.NormalTitle.Render
 	desc := d.styles.NormalDesc.Render
 
-	if index == m.Index() {
+	if index == m.Index() || i.IsChecked == true {
 		title = func(s string) string {
 			return d.styles.SelectedTitle.Render("> " + s)
 		}

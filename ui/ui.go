@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/croyleje/gorm/cmd"
+	"github.com/croyleje/gorm/list"
 	"github.com/croyleje/gorm/ui/keys"
 	"github.com/croyleje/gorm/ui/styles"
 )
@@ -30,17 +30,14 @@ const (
 	restoring
 )
 
-// var path string = cmd.GetTrashDir() + "files/"
-
 type Model struct {
-	delete   *deleteModel
-	detail   *detailModel
-	restore  *restoreModel
-	keyMap   *keys.KeyMap
-	list     list.Model
-	styles   styles.Styles
-	state    state
-	selected map[int]struct{}
+	delete  *deleteModel
+	detail  *detailModel
+	restore *restoreModel
+	keyMap  *keys.KeyMap
+	list    list.Model
+	styles  styles.Styles
+	state   state
 }
 
 func InitialModel() Model {
@@ -57,6 +54,7 @@ func InitialModel() Model {
 			Size:         e.Size,
 			Path:         e.Path,
 			DeletionDate: e.DeletionDate,
+			IsChecked:    e.IsChecked,
 		})
 	}
 
@@ -71,14 +69,13 @@ func InitialModel() Model {
 	l.Styles.HelpStyle = styles.Help
 
 	return Model{
-		delete:   newDeleteModel(),
-		detail:   newDetailModel(),
-		restore:  newRestoreModel(),
-		keyMap:   keys,
-		list:     l,
-		styles:   styles,
-		state:    browsing,
-		selected: make(map[int]struct{}),
+		delete:  newDeleteModel(),
+		detail:  newDetailModel(),
+		restore: newRestoreModel(),
+		keyMap:  keys,
+		list:    l,
+		styles:  styles,
+		state:   browsing,
 	}
 
 }
@@ -107,6 +104,7 @@ func (m *Model) updateListItem() {
 			Size:         e.Size,
 			Path:         e.Path,
 			DeletionDate: e.DeletionDate,
+			IsChecked:    e.IsChecked,
 		})
 	}
 
@@ -135,7 +133,9 @@ func (m *Model) updateKeybindings() {
 		m.keyMap.Detail.SetEnabled(true)
 		m.keyMap.ForceQuit.SetEnabled(true)
 
-		m.keyMap.Cancel.SetEnabled(false)
+		// Cancel and browsing state need to be enabled to allow IsChecked
+		// resets vaules when leaving another state.
+		m.keyMap.Cancel.SetEnabled(true)
 
 	default:
 		m.keyMap.Enter.SetEnabled(true)
@@ -148,7 +148,7 @@ func (m *Model) updateKeybindings() {
 
 }
 
-func listUpdate(msg tea.Msg, m Model) (tea.Model, tea.Cmd) {
+func listUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.list.SetWidth(msg.Width)
@@ -165,6 +165,20 @@ func listUpdate(msg tea.Msg, m Model) (tea.Model, tea.Cmd) {
 
 		case key.Matches(msg, m.keyMap.CursorDown):
 			m.list.CursorDown()
+
+		case key.Matches(msg, m.keyMap.Cancel):
+			m.updateListItem()
+
+		case key.Matches(msg, m.keyMap.Select):
+			i := m.list.SelectedItem().(item)
+			cmd := m.list.SetItem(m.list.Index(), item{Name: i.Name,
+				Type:         i.Type,
+				Size:         i.Size,
+				Path:         i.Path,
+				DeletionDate: i.DeletionDate,
+				IsChecked:    !i.IsChecked,
+			})
+			return m, cmd
 
 		case key.Matches(msg, m.keyMap.Delete):
 			m.state = deleting
@@ -220,7 +234,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 	switch m.state {
 	case browsing:
-		return listUpdate(msg, m)
+		return listUpdate(msg, &m)
 
 	case deleting:
 		return deleteUpdate(msg, m)
@@ -232,7 +246,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return restoreUpdate(msg, m)
 
 	default:
-		return m, nil
+		return listUpdate(msg, &m)
+		// return m, nil
 	}
 
 }
