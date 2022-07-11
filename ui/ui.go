@@ -84,7 +84,7 @@ func (m Model) Init() tea.Cmd {
 	return nil
 }
 
-func (m Model) selectedItem() (item, bool) {
+func (m *Model) selectedItem() (item, bool) {
 	i, ok := m.list.SelectedItem().(item)
 
 	return i, ok

@@ -51,6 +51,7 @@ func deleteUpdate(msg tea.Msg, m Model) (tea.Model, tea.Cmd) {
 				m.state = browsing
 				m.keyMap.State = "browsing"
 				m.updateKeybindings()
+				m.updateListItem()
 
 			default:
 				m.delete.confirmInput.SetValue("")
@@ -61,7 +62,11 @@ func deleteUpdate(msg tea.Msg, m Model) (tea.Model, tea.Cmd) {
 			m.state = browsing
 			m.keyMap.State = "browsing"
 			m.updateKeybindings()
+			m.updateListItem()
 			m.list.ResetFilter()
+			cmd := m.list.NewStatusMessage("canceled deletion")
+			return m, cmd
+
 		}
 	case tea.WindowSizeMsg:
 		m.delete.help.Width = msg.Width
@@ -73,19 +78,56 @@ func deleteUpdate(msg tea.Msg, m Model) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m Model) deleteView() string {
+// func (m *Model) deleteView() string {
+// 	title := m.styles.Title.MarginLeft(2).Render("delete selected items")
+// 	help := lipgloss.NewStyle().MarginLeft(4).Render(m.delete.help.View(m.keyMap))
+
+// 	var itemName string
+
+// 	if i, ok := m.list.SelectedItem().(item); ok {
+// 		itemName = lipgloss.NewStyle().
+// 			Foreground(lipgloss.AdaptiveColor{Light: "#EE6FF8", Dark: "#EE6FF8"}).
+// 			Render(i.Name)
+// 	}
+
+// 	label := fmt.Sprintf("Confirm deletion of items \"%s\"? [y/N]", itemName)
+
+// 	confirmInput := lipgloss.NewStyle().
+// 		MarginLeft(4).
+// 		Render(lipgloss.JoinHorizontal(
+// 			lipgloss.Left,
+// 			label,
+// 			m.delete.confirmInput.View(),
+// 		))
+
+// 	return lipgloss.NewStyle().
+// 		MarginTop(1).
+// 		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", confirmInput, "\n", help))
+// }
+
+func (m *Model) deleteView() string {
 	title := m.styles.Title.MarginLeft(2).Render("delete selected items")
 	help := lipgloss.NewStyle().MarginLeft(4).Render(m.delete.help.View(m.keyMap))
 
-	var itemName string
+	// var selectedItems []string
+	var renderItems string
 
-	if i, ok := m.list.SelectedItem().(item); ok {
-		itemName = lipgloss.NewStyle().
-			Foreground(lipgloss.AdaptiveColor{Light: "#EE6FF8", Dark: "#EE6FF8"}).
-			Render(i.Name)
+	// if i, ok := m.list.SelectedItem().(item); ok {
+	// 	selectedItems = lipgloss.NewStyle().
+	// 		Foreground(lipgloss.AdaptiveColor{Light: "#EE6FF8", Dark: "#EE6FF8"}).
+	// 		Render(i.Name)
+	// }
+
+	for _, i := range m.list.Items() {
+		if i.(item).IsChecked {
+			renderItems += i.(item).Name + "\n"
+		}
 	}
 
-	label := fmt.Sprintf("Confirm deletion of items \"%s\"? [y/N]", itemName)
+	itemsHeader := "Selected for permanent deletion:\n\n"
+	items := itemsHeader + renderItems
+
+	label := fmt.Sprintf("Confirm deletion? [y/N]")
 
 	confirmInput := lipgloss.NewStyle().
 		MarginLeft(4).
@@ -97,5 +139,5 @@ func (m Model) deleteView() string {
 
 	return lipgloss.NewStyle().
 		MarginTop(1).
-		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", confirmInput, "\n", help))
+		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", items, "\n", confirmInput, "\n", help))
 }

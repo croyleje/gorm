@@ -19,6 +19,7 @@ type Styles struct {
 
 	Details       lipgloss.Style
 	DetailsHeader lipgloss.Style
+	DetailsFooter lipgloss.Style
 
 	Pagination lipgloss.Style
 	Help       lipgloss.Style
@@ -57,6 +58,10 @@ func DefaultStyles() (s Styles) {
 		Foreground(lipgloss.AdaptiveColor{Light: "#AA6FF8", Dark: "#AA6FF8"})
 
 	s.DetailsHeader = lipgloss.NewStyle().
+		PaddingLeft(6).
+		Foreground(lipgloss.AdaptiveColor{Light: "#AA6FF8", Dark: "#AA6FF8"})
+
+	s.DetailsFooter = lipgloss.NewStyle().
 		PaddingLeft(6).
 		Foreground(lipgloss.AdaptiveColor{Light: "#AA6FF8", Dark: "#AA6FF8"})
 

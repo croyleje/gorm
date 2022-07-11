@@ -44,32 +44,6 @@ func detailUpdate(msg tea.Msg, m Model) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-// func (m Model) detailView() string {
-// 	title := m.styles.Title.MarginLeft(2).Render("detail view")
-// 	help := lipgloss.NewStyle().MarginLeft(4).Render(m.detail.help.View(m.keyMap))
-
-// 	var itemName string
-
-// 	if i, ok := m.list.SelectedItem().(item); ok {
-// 		itemName = lipgloss.NewStyle().
-// 			Foreground(lipgloss.AdaptiveColor{Light: "#EE6FF8", Dark: "#EE6FF8"}).
-// 			Render(i.Name)
-// 	}
-
-// 	label := fmt.Sprintf("details %s", itemName)
-
-// 	render := lipgloss.NewStyle().
-// 		MarginLeft(4).
-// 		Render(lipgloss.JoinHorizontal(
-// 			lipgloss.Left,
-// 			label,
-// 		))
-
-// 	return lipgloss.NewStyle().
-// 		MarginTop(1).
-// 		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", render, "\n", help))
-// }
-
 func (m Model) detailView() string {
 	title := m.styles.Title.MarginLeft(2).Render("detail view")
 	help := lipgloss.NewStyle().MarginLeft(4).Render(m.detail.help.View(m.keyMap))
@@ -84,6 +58,17 @@ func (m Model) detailView() string {
 	}
 
 	header := fmt.Sprintf("Details for \"%s\".", itemName)
+
+	i := m.list.SelectedItem().(item)
+
+	var placeHolder []byte
+
+	if i.Type == "Directory" {
+		placeHolder, _ = exec.Command("ls", "-1A", cmd.GetTrashDir()+"files/"+i.Name).Output()
+	}
+
+	dirList := string(placeHolder)
+	dirList = m.styles.DetailsFooter.Render(dirList)
 
 	var file string = cmd.GetTrashDir() + "files/" + m.list.SelectedItem().(item).Name
 	path := "Path: " + m.list.SelectedItem().(item).Path
@@ -104,5 +89,5 @@ func (m Model) detailView() string {
 
 	return lipgloss.NewStyle().
 		MarginTop(1).
-		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", render, "\n", path, formattedStats, "\n", help))
+		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", render, "\n", path, formattedStats, dirList, "\n", help))
 }
