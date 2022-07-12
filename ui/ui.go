@@ -180,6 +180,34 @@ func listUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 			})
 			return m, cmd
 
+		// case key.Matches(msg, m.keyMap.SelectAll):
+		// 	var cmd tea.Cmd
+		// 	for k, i := range m.list.VisibleItems() {
+		// 		cmd = m.list.SetItem(k, item{Name: i.(item).Name,
+		// 			Type:         i.(item).Type,
+		// 			Size:         i.(item).Size,
+		// 			Path:         i.(item).Path,
+		// 			DeletionDate: i.(item).DeletionDate,
+		// 			IsChecked:    !i.(item).IsChecked,
+		// 		})
+		// 	}
+		// 	return m, cmd
+
+		case key.Matches(msg, m.keyMap.SelectAll):
+			var cmd tea.Cmd
+			start, end := m.list.Paginator.GetSliceBounds(len(m.list.Items()))
+			items := m.list.Items()[start:end]
+			for k, i := range items {
+				cmd = m.list.SetItem(k, item{Name: i.(item).Name,
+					Type:         i.(item).Type,
+					Size:         i.(item).Size,
+					Path:         i.(item).Path,
+					DeletionDate: i.(item).DeletionDate,
+					IsChecked:    !i.(item).IsChecked,
+				})
+			}
+			return m, cmd
+
 		case key.Matches(msg, m.keyMap.Delete):
 			style := m.styles.ErrMsg
 			if m.checkedSelected() < 1 {

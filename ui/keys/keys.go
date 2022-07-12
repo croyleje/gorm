@@ -8,6 +8,7 @@ type KeyMap struct {
 	CursorUp   key.Binding
 	CursorDown key.Binding
 	Select     key.Binding
+	SelectAll  key.Binding
 	Enter      key.Binding
 	Delete     key.Binding
 	Detail     key.Binding
@@ -62,6 +63,10 @@ func NewKeyMap() *KeyMap {
 		Select: key.NewBinding(
 			key.WithKeys(" "),
 			key.WithHelp(" ", "toggle selection"),
+		),
+		SelectAll: key.NewBinding(
+			key.WithKeys("ctrl+a"),
+			key.WithHelp("ctrl+a", "toggle select all"),
 		),
 		Enter: key.NewBinding(
 			key.WithKeys("enter"),
