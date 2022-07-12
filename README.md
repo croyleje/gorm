@@ -42,6 +42,8 @@ lacking in other cli/tui trash applications.
 * TODO: add error handling to cmd package
 * TODO: rewrite variables to constants where possible
 * TODO: rename variables and funcs
+* TODO: rewrite arg parsing to use the Kingpin package enabling default width
+  and height flags.
 
 ## Status
 gorm is in a alpha status it is useable for home directory trash and single user
