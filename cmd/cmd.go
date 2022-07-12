@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bufio"
+	"bytes"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -320,13 +321,6 @@ func DeleteItem(i string) {
 	os.Remove(trashInfoDir + i + ".trashinfo")
 }
 
-// BUG: entry removal not working properly rewrite with native golang package
-func removeDirSizesEntry(i string) {
-	pattern := fmt.Sprintf("'/%s/d'", i)
-	cmd := exec.Command("sed", "-i", pattern, dirSizesFile)
-	cmd.Run()
-}
-
 func IsHome(path string) bool {
 	home, _ := os.UserHomeDir()
 	abs, _ := filepath.Abs(path)
@@ -364,4 +358,43 @@ func getMount(path string) string {
 
 	return point
 
+}
+
+func removeDirSizesEntry(pattern string) {
+	// NOTE: path to file to match on
+	fpath := dirSizesFile
+
+	f, err := os.Open(fpath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	// NOTE: pattern to match string matched lines are removed
+
+	var bs []byte
+	buf := bytes.NewBuffer(bs)
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		// NOTE: the not operator
+		if !strings.Contains(scanner.Text(), pattern) {
+			_, err := buf.Write(scanner.Bytes())
+			if err != nil {
+				log.Fatal(err)
+			}
+			_, err = buf.WriteString("\n")
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	err = os.WriteFile(fpath, buf.Bytes(), 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
