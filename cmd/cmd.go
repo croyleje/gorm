@@ -242,12 +242,8 @@ func generateTrashInfo(arg ...string) {
 }
 
 func isDirectory(path string) bool {
-	_, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		return false
-	} else {
-		return true
-	}
+	info, _ := os.Stat(path)
+	return info.IsDir()
 }
 
 func dirSize(path string) (string, error) {
@@ -317,10 +313,18 @@ func RestoreItemLocal(i string) {
 func DeleteItem(i string) {
 	if isDirectory(trashDir + i) {
 		os.RemoveAll(trashDir + i)
+		removeDirSizesEntry(i)
 	} else {
 		os.Remove(trashDir + i)
 	}
 	os.Remove(trashInfoDir + i + ".trashinfo")
+}
+
+// BUG: entry removal not working properly rewrite with native golang package
+func removeDirSizesEntry(i string) {
+	pattern := fmt.Sprintf("'/%s/d'", i)
+	cmd := exec.Command("sed", "-i", pattern, dirSizesFile)
+	cmd.Run()
 }
 
 func IsHome(path string) bool {
