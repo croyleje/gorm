@@ -18,6 +18,7 @@ lacking in other cli/tui trash applications.
 * Fuzzy search by filename and path.*
 * Local or original path restoration.
 * Detail view including.
+  * Directory contents
   * Type
   * Name
   * Full path
@@ -34,13 +35,28 @@ lacking in other cli/tui trash applications.
 * Prompt and auto generate new mount point trash files.
 * Link handling
   * Prompt when trashing links (symbolic & hard).
-  * Prompt when restoring links.
-  * Add link icon to tui display.
+  * Prompt when restoring links and confirm link is still valid.
 
 ## TODO / BUGS
 * BUG: FilterState bug PATCHED
 * TODO: add error handling to cmd package
 * TODO: rewrite variables to constants where possible
 * TODO: rename variables and funcs
+
+## Status
+gorm is in a alpha status it is useable for home directory trash and single user
+systems.  I have been adding features almost daily but I do welcome anyone to
+try it and give me there feedback.  Pull requests are welcome but I am still
+merging code from the original application so if you submit a pull request it
+will probably have to be changed as the other features are implemented.  If you
+are interested in helping with the rewrite from C to Go feel free to contact me
+and I can get you access to the other repositories so you can help with the
+rewrite.
+
+The tui interface is basically set but there is plenty of formatting and default
+theme changes that need to be merged.  I have decided to drop the icon support
+and all the icons have been replaced with single word descriptions *ie.* **File**,
+**Directory** or **Link**.  If there is interest in reimplementing the icons, we
+could see about adding a config option or flag to enable them.
 
 vim: tw=80
