@@ -39,6 +39,17 @@ lacking in other cli/tui trash applications.
 
 \* See TODO/BUGS and Unimplemented features list.
 
+## Installation
+gorm currently supports local builds only, after the first release a binary and
+Arch AUR package will be available.  To build the binary use the following
+steps.
+
+Clone the repo.
+`git clone https://github.com/croyleje/gorm.git`
+
+Build the package.
+`go build -o gorm main.go`
+
 ## Unimplemented features
 * Prompt and auto generate new mount point trash files.
 * Link handling
