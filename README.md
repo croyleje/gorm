@@ -4,6 +4,14 @@ Go written replacement for the Linux/Unix ***rm*** command.  Gorm implements the
 Trash Specification v1.0 (Latest Release) along with some features I found
 lacking in other cli/tui trash applications.
 
+## Commands
+* **-put** moves a file to that mount points trash file.
+* **-list** cli list in unicode table format of all trash files with key stats.
+* ***No flag*** starts gorm in tui mode allowing detail view of trashed files,
+  restoring files or emptying trash folder.
+* **-empty** empties trash folder.
+* **-debug** enables debug log.
+
 ## Features
 * Automatically `shreds` sensitive files and user definable files by extension
   and name, including.*
