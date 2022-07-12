@@ -17,9 +17,15 @@ type Styles struct {
 	CurrentTitle lipgloss.Style
 	CurrentDesc  lipgloss.Style
 
+	SelectedCurrentTitle lipgloss.Style
+	SelectedCurrentDesc  lipgloss.Style
+
 	Details       lipgloss.Style
 	DetailsHeader lipgloss.Style
 	DetailsFooter lipgloss.Style
+
+	ErrMsg    lipgloss.Style
+	StatusMsg lipgloss.Style
 
 	Pagination lipgloss.Style
 	Help       lipgloss.Style
@@ -27,32 +33,45 @@ type Styles struct {
 }
 
 func DefaultStyles() (s Styles) {
+	// Header
 	s.Title = lipgloss.NewStyle().
-		Background(lipgloss.Color("62")).
-		Foreground(lipgloss.Color("230")).
+		Background(lipgloss.Color("004")).
+		Foreground(lipgloss.Color("007")).
 		Padding(0, 1)
 
+	// Title & Description
 	s.NormalTitle = lipgloss.NewStyle().
-		PaddingLeft(4).
+		PaddingLeft(6).
 		Foreground(lipgloss.AdaptiveColor{Light: "#1A1A1A", Dark: "#DDDDDD"})
 
 	s.NormalDesc = lipgloss.NewStyle().
 		Foreground(lipgloss.AdaptiveColor{Light: "#A49FA5", Dark: "#777777"})
 
+	// Cursor position Title & Description
+	s.CurrentTitle = lipgloss.NewStyle().
+		PaddingLeft(4).
+		Foreground(lipgloss.AdaptiveColor{Light: "#1A1A1A", Dark: "#DDDDDD"})
+
+	s.CurrentDesc = lipgloss.NewStyle().
+		Foreground(lipgloss.AdaptiveColor{Light: "#A49FA5", Dark: "#777777"})
+
+	// Cursor position && Selected Title & Description
+	s.SelectedCurrentTitle = lipgloss.NewStyle().
+		PaddingLeft(4).
+		Foreground(lipgloss.AdaptiveColor{Light: "#EE6FF8", Dark: "#EE6FF8"})
+
+	s.SelectedCurrentDesc = lipgloss.NewStyle().
+		Foreground(lipgloss.AdaptiveColor{Light: "#F793FF", Dark: "#AD58B4"})
+
+	// Selected Title & Description
 	s.SelectedTitle = lipgloss.NewStyle().
-		PaddingLeft(2).
+		PaddingLeft(6).
 		Foreground(lipgloss.AdaptiveColor{Light: "#EE6FF8", Dark: "#EE6FF8"})
 
 	s.SelectedDesc = lipgloss.NewStyle().
 		Foreground(lipgloss.AdaptiveColor{Light: "#F793FF", Dark: "#AD58B4"})
 
-	s.CurrentTitle = lipgloss.NewStyle().
-		PaddingLeft(2).
-		Foreground(lipgloss.AdaptiveColor{Light: "#AA6FF8", Dark: "#AA6FF8"})
-
-	s.CurrentDesc = lipgloss.NewStyle().
-		Foreground(lipgloss.AdaptiveColor{Light: "#C780FA", Dark: "#9C57F7"})
-
+	// detailsView
 	s.Details = lipgloss.NewStyle().
 		PaddingLeft(4).
 		Foreground(lipgloss.AdaptiveColor{Light: "#AA6FF8", Dark: "#AA6FF8"})
@@ -65,6 +84,17 @@ func DefaultStyles() (s Styles) {
 		PaddingLeft(6).
 		Foreground(lipgloss.AdaptiveColor{Light: "#AA6FF8", Dark: "#AA6FF8"})
 
+	// Error message
+	s.ErrMsg = lipgloss.NewStyle().
+		Background(lipgloss.Color("001")).
+		Foreground(lipgloss.Color("007"))
+
+	// Status message
+	s.StatusMsg = lipgloss.NewStyle().
+		Background(lipgloss.Color("010")).
+		Foreground(lipgloss.Color("007"))
+
+	// Footer
 	s.Pagination = list.DefaultStyles().
 		PaginationStyle.
 		PaddingLeft(4)

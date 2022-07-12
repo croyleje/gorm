@@ -75,6 +75,7 @@ func restoreUpdate(msg tea.Msg, m Model) (tea.Model, tea.Cmd) {
 			m.state = browsing
 			m.keyMap.State = "browsing"
 			m.updateKeybindings()
+			m.updateListItem()
 			m.list.ResetFilter()
 		}
 	case tea.WindowSizeMsg:

@@ -36,12 +36,27 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 	title := d.styles.NormalTitle.Render
 	desc := d.styles.NormalDesc.Render
 
-	if index == m.Index() || i.IsChecked == true {
+	if index == m.Index() {
 		title = func(s string) string {
-			return d.styles.SelectedTitle.Render("> " + s)
+			return d.styles.CurrentTitle.Render("> " + s)
+		}
+	}
+
+	if i.IsChecked {
+		title = func(s string) string {
+			return d.styles.SelectedTitle.Render(s)
 		}
 		desc = func(s string) string {
 			return d.styles.SelectedDesc.Render(s)
+		}
+	}
+
+	if i.IsChecked && index == m.Index() {
+		title = func(s string) string {
+			return d.styles.SelectedCurrentTitle.Render("> " + s)
+		}
+		desc = func(s string) string {
+			return d.styles.SelectedCurrentDesc.Render(s)
 		}
 	}
 

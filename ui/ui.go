@@ -181,14 +181,24 @@ func listUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 			return m, cmd
 
 		case key.Matches(msg, m.keyMap.Delete):
+			style := m.styles.ErrMsg
+			if m.checkedSelected() < 1 {
+				cmd := m.list.NewStatusMessage(style.Render(" ERROR: No Selection. "))
+				return m, cmd
+			}
 			m.state = deleting
 			m.keyMap.State = "deleting"
 			m.delete.confirmInput.Focus()
 			m.updateKeybindings()
 
 		case key.Matches(msg, m.keyMap.Detail):
+			style := m.styles.ErrMsg
 			if m.checkedSelected() > 1 {
-				cmd := m.list.NewStatusMessage("Select only one item at a time for detail view")
+				cmd := m.list.NewStatusMessage(style.Render(" ERROR: Select only one item at a time for detail view. "))
+				return m, cmd
+			}
+			if m.checkedSelected() < 1 {
+				cmd := m.list.NewStatusMessage(style.Render(" ERROR: No selection. "))
 				return m, cmd
 			}
 			m.state = details
@@ -196,6 +206,11 @@ func listUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 			m.updateKeybindings()
 
 		case key.Matches(msg, m.keyMap.Restore):
+			style := m.styles.ErrMsg
+			if m.checkedSelected() < 1 {
+				cmd := m.list.NewStatusMessage(style.Render(" ERROR: No selection. "))
+				return m, cmd
+			}
 			m.state = restoring
 			m.keyMap.State = "restoring"
 			m.restore.confirmInput.Focus()
