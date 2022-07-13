@@ -202,6 +202,7 @@ func (m Model) restoreView() string {
 
 	confirmInput := lipgloss.NewStyle().
 		MarginLeft(4).
+		MarginBottom(2).
 		Render(lipgloss.JoinHorizontal(
 			lipgloss.Left,
 			label,
@@ -210,5 +211,5 @@ func (m Model) restoreView() string {
 
 	return lipgloss.NewStyle().
 		MarginTop(1).
-		Render(lipgloss.JoinVertical(lipgloss.Left, title, itemsHeader, items, confirmInput, "\n", help))
+		Render(lipgloss.JoinVertical(lipgloss.Left, title, itemsHeader, items, confirmInput, help))
 }

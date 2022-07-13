@@ -162,7 +162,7 @@ func deleteUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 
 func (m *Model) deleteView() string {
 	title := m.styles.Title.MarginLeft(2).Render("Delete Trash")
-	help := lipgloss.NewStyle().MarginLeft(4).PaddingTop(2).Render(m.delete.help.View(m.keyMap))
+	help := lipgloss.NewStyle().MarginLeft(4).Render(m.delete.help.View(m.keyMap))
 
 	var renderItems string
 
