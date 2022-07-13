@@ -24,6 +24,9 @@ type Styles struct {
 	DetailsHeader lipgloss.Style
 	DetailsFooter lipgloss.Style
 
+	Delete      lipgloss.Style
+	DeleteItems lipgloss.Style
+
 	ErrMsg    lipgloss.Style
 	StatusMsg lipgloss.Style
 
@@ -84,6 +87,17 @@ func DefaultStyles() (s Styles) {
 		PaddingLeft(6).
 		Foreground(lipgloss.AdaptiveColor{Light: "#AA6FF8", Dark: "#AA6FF8"})
 
+	// deleteView
+	s.Delete = lipgloss.NewStyle().
+		PaddingLeft(4).
+		PaddingTop(2).
+		PaddingBottom(2)
+
+	s.DeleteItems = lipgloss.NewStyle().
+		PaddingLeft(4).
+		PaddingBottom(1).
+		Foreground(lipgloss.AdaptiveColor{Light: "#AA6FF8", Dark: "#AA6FF8"})
+
 	// Error message
 	s.ErrMsg = lipgloss.NewStyle().
 		Background(lipgloss.Color("001")).
@@ -91,7 +105,7 @@ func DefaultStyles() (s Styles) {
 
 	// Status message
 	s.StatusMsg = lipgloss.NewStyle().
-		Background(lipgloss.Color("010")).
+		Background(lipgloss.Color("034")).
 		Foreground(lipgloss.Color("007"))
 
 	// Footer

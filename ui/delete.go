@@ -98,7 +98,7 @@ func deleteUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 				m.state = browsing
 				m.keyMap.State = "browsing"
 				m.updateKeybindings()
-				cmd := m.list.NewStatusMessage("permanently deleted " + fmt.Sprintf("%d", n) + " items")
+				cmd := m.list.NewStatusMessage(m.styles.StatusMsg.Render(" Permanently deleted " + fmt.Sprintf("%d", n) + " items... "))
 				return m, cmd
 
 			case "n", "N", "":
@@ -119,7 +119,7 @@ func deleteUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 			m.updateKeybindings()
 			m.updateListItem()
 			m.list.ResetFilter()
-			cmd := m.list.NewStatusMessage("canceled deletion")
+			cmd := m.list.NewStatusMessage(m.styles.StatusMsg.Render(" Deletion Canceled... "))
 			return m, cmd
 
 		}
@@ -161,8 +161,8 @@ func deleteUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 // }
 
 func (m *Model) deleteView() string {
-	title := m.styles.Title.MarginLeft(2).Render("delete selected items")
-	help := lipgloss.NewStyle().MarginLeft(4).Render(m.delete.help.View(m.keyMap))
+	title := m.styles.Title.MarginLeft(2).MarginBottom(1).Render("delete selected items")
+	help := lipgloss.NewStyle().MarginLeft(4).PaddingTop(2).Render(m.delete.help.View(m.keyMap))
 
 	// var selectedItems []string
 	var renderItems string
@@ -179,8 +179,8 @@ func (m *Model) deleteView() string {
 		}
 	}
 
-	itemsHeader := "Selected for permanent deletion:\n\n"
-	items := itemsHeader + renderItems
+	itemsHeader := m.styles.Delete.Render("Selected for permanent deletion:")
+	items := m.styles.DeleteItems.Render(renderItems)
 
 	label := fmt.Sprintf("Confirm deletion? [y/N]")
 
@@ -194,5 +194,5 @@ func (m *Model) deleteView() string {
 
 	return lipgloss.NewStyle().
 		MarginTop(1).
-		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", items, "\n", confirmInput, "\n", help))
+		Render(lipgloss.JoinVertical(lipgloss.Left, title, itemsHeader, items, confirmInput, help))
 }

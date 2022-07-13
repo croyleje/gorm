@@ -90,5 +90,5 @@ func (m Model) detailView() string {
 
 	return lipgloss.NewStyle().
 		MarginTop(1).
-		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", render, "\n", path, formattedStats, dirList, "\n", help))
+		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", render, "\n", path, formattedStats, dirList, help))
 }
