@@ -46,8 +46,8 @@ func detailUpdate(msg tea.Msg, m Model) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) detailView() string {
-	title := m.styles.Title.MarginLeft(2).Render("detail view")
-	help := lipgloss.NewStyle().MarginLeft(4).Render(m.detail.help.View(m.keyMap))
+	title := m.styles.Title.MarginLeft(2).Render("Detail View")
+	help := lipgloss.NewStyle().MarginLeft(4).PaddingTop(2).Render(m.detail.help.View(m.keyMap))
 
 	var itemName string
 
@@ -63,13 +63,14 @@ func (m Model) detailView() string {
 	i := m.list.SelectedItem().(item)
 
 	var placeHolder []byte
+	var dirList string
 
 	if i.Type == "Directory" {
+		dirList += "Directory contents:\n\n"
 		placeHolder, _ = exec.Command("ls", "-1A", cmd.GetTrashDir()+"files/"+i.Name).Output()
+		dirList += string(placeHolder)
+		dirList = m.styles.DetailsFooter.Render(dirList)
 	}
-
-	dirList := string(placeHolder)
-	dirList = m.styles.DetailsFooter.Render(dirList)
 
 	var file string = cmd.GetTrashDir() + "files/" + m.list.SelectedItem().(item).Name
 	path := "Path: " + m.list.SelectedItem().(item).Path
@@ -83,6 +84,7 @@ func (m Model) detailView() string {
 
 	render := lipgloss.NewStyle().
 		MarginLeft(4).
+		MarginBottom(2).
 		Render(lipgloss.JoinHorizontal(
 			lipgloss.Left,
 			header,
@@ -90,5 +92,5 @@ func (m Model) detailView() string {
 
 	return lipgloss.NewStyle().
 		MarginTop(1).
-		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", render, "\n", path, formattedStats, dirList, help))
+		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", render, path, formattedStats, dirList, help))
 }

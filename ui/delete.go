@@ -161,17 +161,10 @@ func deleteUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 // }
 
 func (m *Model) deleteView() string {
-	title := m.styles.Title.MarginLeft(2).MarginBottom(1).Render("delete selected items")
+	title := m.styles.Title.MarginLeft(2).Render("Delete Trash")
 	help := lipgloss.NewStyle().MarginLeft(4).PaddingTop(2).Render(m.delete.help.View(m.keyMap))
 
-	// var selectedItems []string
 	var renderItems string
-
-	// if i, ok := m.list.SelectedItem().(item); ok {
-	// 	selectedItems = lipgloss.NewStyle().
-	// 		Foreground(lipgloss.AdaptiveColor{Light: "#EE6FF8", Dark: "#EE6FF8"}).
-	// 		Render(i.Name)
-	// }
 
 	for _, i := range m.list.Items() {
 		if i.(item).IsChecked {
@@ -186,6 +179,7 @@ func (m *Model) deleteView() string {
 
 	confirmInput := lipgloss.NewStyle().
 		MarginLeft(4).
+		MarginBottom(2).
 		Render(lipgloss.JoinHorizontal(
 			lipgloss.Left,
 			label,
