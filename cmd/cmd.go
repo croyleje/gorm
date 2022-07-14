@@ -332,7 +332,23 @@ func IsHome(path string) bool {
 	}
 }
 
+// func GetTrashDir() string {
+// 	path, err := os.Getwd()
+// 	home, err := os.UserHomeDir()
+// 	if err != nil {
+// 		log.Fatalf("unable to open trash file does not exist: %s", getMount(path))
+// 	} else {
+// 		if IsHome(path) {
+// 			return home + "/.local/share/Trash/"
+// 		}
+// 	}
+// 	return ""
+
+// }
+
 func GetTrashDir() string {
+	uid := os.Geteuid()
+	uuid := fmt.Sprintf("%d", uid)
 	path, err := os.Getwd()
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -340,6 +356,8 @@ func GetTrashDir() string {
 	} else {
 		if IsHome(path) {
 			return home + "/.local/share/Trash/"
+		} else {
+			return getMount(path) + "/.Trash-" + uuid + "/"
 		}
 	}
 	return ""
