@@ -46,8 +46,8 @@ func detailUpdate(msg tea.Msg, m Model) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) detailView() string {
-	title := m.styles.Title.MarginLeft(2).Render("Detail View")
-	help := lipgloss.NewStyle().MarginLeft(4).PaddingTop(2).Render(m.detail.help.View(m.keyMap))
+	title := m.styles.Title.MarginLeft(2).MarginBottom(2).Render("Detail View")
+	help := lipgloss.NewStyle().MarginLeft(4).Render(m.detail.help.View(m.keyMap))
 
 	var itemName string
 
@@ -65,11 +65,23 @@ func (m Model) detailView() string {
 	var placeHolder []byte
 	var dirList string
 
+	// if i.Type == "Directory" {
+	// 	dirList += "Directory contents:\n\n"
+	// 	// TODO: rewrite with native go package
+	// 	// placeHolder, _ = exec.Command("ls", "-1A", cmd.GetTrashDir()+"files/"+i.Name).Output()
+	// 	placeHolder, _ = exec.Command("tree", cmd.GetTrashDir()+"files/"+i.Name).Output()
+	// 	dirList += string(placeHolder)
+	// 	dirList = m.styles.DetailsFooter.Render(dirList)
+	// }
+
 	if i.Type == "Directory" {
-		dirList += "Directory contents:\n\n"
-		placeHolder, _ = exec.Command("ls", "-1A", cmd.GetTrashDir()+"files/"+i.Name).Output()
+		dirList += "Directory contents:\n"
+		// TODO: rewrite with native go package
+		// placeHolder, _ = exec.Command("ls", "-1A", cmd.GetTrashDir()+"files/"+i.Name).Output()
+		placeHolder, _ = exec.Command("tree", cmd.GetTrashDir()+"files/"+i.Name).Output()
 		dirList += string(placeHolder)
-		dirList = m.styles.DetailsFooter.Render(dirList)
+		dirList = strings.ReplaceAll(dirList, cmd.GetTrashDir()+"files/"+i.Name, "")
+		dirList = m.styles.DetailsFooter.Render(dirList + "\n")
 	}
 
 	var file string = cmd.GetTrashDir() + "files/" + m.list.SelectedItem().(item).Name
@@ -92,5 +104,5 @@ func (m Model) detailView() string {
 
 	return lipgloss.NewStyle().
 		MarginTop(1).
-		Render(lipgloss.JoinVertical(lipgloss.Left, title, "\n", render, path, formattedStats, dirList, help))
+		Render(lipgloss.JoinVertical(lipgloss.Left, title, render, path, formattedStats, dirList, help))
 }

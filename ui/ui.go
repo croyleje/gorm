@@ -142,7 +142,6 @@ func (m *Model) updateKeybindings() {
 		m.keyMap.Delete.SetEnabled(true)
 		m.keyMap.Detail.SetEnabled(true)
 		m.keyMap.ForceQuit.SetEnabled(true)
-
 		m.keyMap.Cancel.SetEnabled(false)
 	}
 
