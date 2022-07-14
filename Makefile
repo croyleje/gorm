@@ -8,4 +8,4 @@ run:
 	@go run main.go
 
 clean:
-	rm main
+	rm gorm
