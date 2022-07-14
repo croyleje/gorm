@@ -1,8 +1,8 @@
 make: clean
-	@go build main.go
+	@go build -o gorm main.go
 
 build:
-	@go build main.go
+	@go build -o gorm main.go
 
 run:
 	@go run main.go
