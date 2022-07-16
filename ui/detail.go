@@ -84,7 +84,10 @@ func (m Model) detailView() string {
 		dirList = m.styles.DetailsFooter.Render(dirList + "\n")
 	}
 
-	var file string = cmd.GetTrashDir() + "files/" + m.list.SelectedItem().(item).Name
+	// TODO: make trashDir presistent global variable
+	// var file string = cmd.GetTrashDir() + "files/" + m.list.SelectedItem().(item).Name
+	// var file string = cmd.GetTrashDir() + "files/" + m.list.SelectedItem().(item).Name
+	var file string = cmd.ReadDir() + m.list.SelectedItem().(item).Name
 	path := "Path: " + m.list.SelectedItem().(item).Path
 	path = m.styles.DetailsHeader.Render(path)
 

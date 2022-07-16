@@ -393,9 +393,19 @@ func GetTrashDir() string {
 }
 
 func GetMounts() []string {
-	test := []string{"one", "two", "three"}
+	test := []string{"/mnt/backup/.Trash-1000/", "two", "three"}
 	return test
 
+}
+
+func SetTrashDir(path string) {
+	trashDir = path + "files/"
+	trashInfoDir = path + "info/"
+	dirSizesFile = path + "directorysizes"
+}
+
+func ReadDir() string {
+	return trashDir
 }
 
 // TODO: rewrite check and/or create Trash directories per mount point.
