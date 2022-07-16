@@ -118,6 +118,9 @@ func (m *Model) updateKeybindings() {
 	if m.list.SettingFilter() {
 		m.keyMap.Enter.SetEnabled(false)
 	}
+	if !m.list.SettingFilter() {
+		m.keyMap.Delete.SetEnabled(true)
+	}
 
 	switch m.state {
 	case deleting, details, restoring:
@@ -271,6 +274,7 @@ func (m *Model) checkedSelected() int {
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if m.list.SettingFilter() {
 		m.keyMap.Enter.SetEnabled(false)
+		m.keyMap.Delete.SetEnabled(false)
 	}
 
 	switch msg := msg.(type) {
