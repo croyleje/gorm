@@ -392,6 +392,12 @@ func GetTrashDir() string {
 	return ""
 }
 
+func GetMounts() []string {
+	test := []string{"one", "two", "three"}
+	return test
+
+}
+
 // TODO: rewrite check and/or create Trash directories per mount point.
 func createTrashDir(path string) {
 	os.Mkdir(path, 0700)

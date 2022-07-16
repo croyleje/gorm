@@ -123,7 +123,7 @@ func (m *Model) updateKeybindings() {
 	}
 
 	switch m.state {
-	case deleting, details, restoring:
+	case deleting, details, managing, restoring:
 		m.keyMap.Enter.SetEnabled(true)
 		m.keyMap.Cancel.SetEnabled(true)
 		m.keyMap.ForceQuit.SetEnabled(true)

@@ -1,28 +1,42 @@
 package ui
 
 import (
-	"fmt"
-
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/croyleje/gorm/cmd"
+	"github.com/croyleje/gorm/list"
+	"github.com/croyleje/gorm/ui/keys"
+	"github.com/croyleje/gorm/ui/styles"
 )
 
 type manageModel struct {
-	help         help.Model
-	confirmInput textinput.Model
+	help help.Model
+	list list.Model
 }
 
 func newManageModel() *manageModel {
-	ci := textinput.New()
-	ci.CharLimit = 1
+	mounts := cmd.GetMounts()
+
+	items := []list.Item{}
+	for _, m := range mounts {
+		items = append(items, item{
+			Name: m,
+		})
+	}
+
+	styles := styles.DefaultStyles()
+	keys := keys.NewKeyMap()
+
+	l := list.New(items, newItemDelegate(keys, &styles), 55, 33)
+	l.Title = "Select Trash Directory"
+	l.SetStatusBarItemName("Trash directory", "Trash directories")
+	l.SetShowStatusBar(true)
 
 	return &manageModel{
-		help:         help.New(),
-		confirmInput: ci,
+		help: help.New(),
+		list: l,
 	}
 }
 
@@ -30,37 +44,7 @@ func manageUpdate(msg tea.Msg, m Model) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch {
-		case key.Matches(msg, m.keyMap.Enter):
-			switch m.manage.confirmInput.Value() {
-			case "y", "Y":
-				var n int = 0
-				for _, i := range m.list.Items() {
-					if i.(item).IsChecked {
-						cmd.RestoreItem(i.(item).Name)
-						n++
-					}
-				}
-
-				m.updateListItem()
-				m.manage.confirmInput.Reset()
-				m.state = browsing
-				m.keyMap.State = "browsing"
-				m.updateKeybindings()
-				cmd := m.list.NewStatusMessage(m.styles.StatusMsg.Render(" Selected " + fmt.Sprintf("%d", n) + " items."))
-				return m, cmd
-
-			case "n", "N", "":
-				m.manage.confirmInput.Reset()
-				m.state = browsing
-				m.keyMap.State = "browsing"
-				m.updateKeybindings()
-
-			default:
-				m.manage.confirmInput.SetValue("")
-			}
-
 		case key.Matches(msg, m.keyMap.Cancel):
-			m.manage.confirmInput.Reset()
 			m.state = browsing
 			m.keyMap.State = "browsing"
 			m.updateKeybindings()
@@ -72,27 +56,15 @@ func manageUpdate(msg tea.Msg, m Model) (tea.Model, tea.Cmd) {
 	}
 
 	var cmd tea.Cmd
-	m.manage.confirmInput, cmd = m.manage.confirmInput.Update(msg)
+	m.manage.list, cmd = m.manage.list.Update(msg)
 
 	return m, cmd
 }
 
 func (m Model) manageView() string {
-	title := m.styles.Title.MarginLeft(2).Render("Manage Trash")
 	help := lipgloss.NewStyle().MarginLeft(4).Render(m.manage.help.View(m.keyMap))
-
-	label := fmt.Sprintf("Confirm selection? [Y/n]")
-
-	confirmInput := lipgloss.NewStyle().
-		MarginLeft(4).
-		MarginBottom(2).
-		Render(lipgloss.JoinHorizontal(
-			lipgloss.Left,
-			label,
-			m.manage.confirmInput.View(),
-		))
 
 	return lipgloss.NewStyle().
 		MarginTop(1).
-		Render(lipgloss.JoinVertical(lipgloss.Left, title, confirmInput, help))
+		Render(lipgloss.JoinVertical(lipgloss.Left, m.manage.list.View(), help))
 }

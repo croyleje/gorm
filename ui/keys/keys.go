@@ -30,13 +30,11 @@ type KeyMap struct {
 func (k KeyMap) ShortHelp() []key.Binding {
 	var kb []key.Binding
 
-	if k.State != "browsing" {
-		kb = append(kb, k.Cancel, k.ForceQuit)
-	}
+	// if k.State != / = state {
+	// 	kb = append(kb, k.Cancel, k.ForceQuit)
+	// }
 
-	if k.State == "restoring" {
-		kb = append(kb, k.LocalRestore)
-	}
+	kb = append(kb, k.Cancel, k.ForceQuit)
 
 	return kb
 }
@@ -45,9 +43,9 @@ func (k KeyMap) ShortHelp() []key.Binding {
 // key.Map interface.
 func (k KeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
-		{k.CursorUp, k.CursorDown}, // first column
-		{k.Help, k.Quit},           // second column
-		{k.Cancel, k.ForceQuit},
+		// {k.CursorUp, k.Cur
+		// {k.Help, k.Quit},           // second column
+		// {k.Cancel, k.ForceQuit},
 	}
 }
 
@@ -106,8 +104,8 @@ func NewKeyMap() *KeyMap {
 			key.WithHelp("ctrl+c", "force quit"),
 		),
 		LocalRestore: key.NewBinding(
-			key.WithKeys("l"),
-			key.WithHelp("l", "restore file to current working directory"),
+			key.WithKeys("l", "L"),
+			key.WithHelp("l/L", "restore file to current working directory"),
 		),
 	}
 }
