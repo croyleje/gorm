@@ -12,6 +12,7 @@ type KeyMap struct {
 	Enter      key.Binding
 	Delete     key.Binding
 	Detail     key.Binding
+	Manage     key.Binding
 	Restore    key.Binding
 	Help       key.Binding
 	Cancel     key.Binding
@@ -79,6 +80,10 @@ func NewKeyMap() *KeyMap {
 		Detail: key.NewBinding(
 			key.WithKeys("ctrl+v"),
 			key.WithHelp("ctrl+v", "detail view"),
+		),
+		Manage: key.NewBinding(
+			key.WithKeys("ctrl+t"),
+			key.WithHelp("ctrl+t", "choose diffrent trash file"),
 		),
 		Restore: key.NewBinding(
 			key.WithKeys("ctrl+r"),

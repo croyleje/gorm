@@ -98,7 +98,7 @@ func deleteUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 				m.state = browsing
 				m.keyMap.State = "browsing"
 				m.updateKeybindings()
-				cmd := m.list.NewStatusMessage(m.styles.StatusMsg.Render(" Permanently deleted " + fmt.Sprintf("%d", n) + " items... "))
+				cmd := m.list.NewStatusMessage(m.styles.StatusMsg.Render(" Permanently deleted " + fmt.Sprintf("%d", n) + " item/items... "))
 				return m, cmd
 
 			case "n", "N", "":

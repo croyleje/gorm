@@ -1147,7 +1147,7 @@ func (m Model) populatedView() string {
 		if m.filterState == Filtering {
 			return ""
 		}
-		return m.Styles.NoItems.Render("No " + m.itemNamePlural + " found.")
+		return m.Styles.NoItems.Render("\tNo " + m.itemNamePlural + " found.")
 	}
 
 	if len(items) > 0 {

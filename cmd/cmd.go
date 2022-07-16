@@ -37,6 +37,9 @@ type Item struct {
 }
 
 func GetEntries() ([]Item, error) {
+	if !checkFileExists(trashDir) {
+		GetTrashDir()
+	}
 	file, err := os.Open(trashDir)
 	if err != nil {
 		log.Fatalf("error: %v %v", file, err)
@@ -367,23 +370,33 @@ func IsHome(path string) bool {
 func GetTrashDir() string {
 	uid := os.Geteuid()
 	uuid := fmt.Sprintf("%d", uid)
-	path, err := os.Getwd()
-	home, err := os.UserHomeDir()
-	if err != nil {
-		log.Fatalf("unable to open trash file does not exist: %s", getMount(path))
-	} else {
-		if IsHome(path) {
+	path, _ := os.Getwd()
+	home, _ := os.UserHomeDir()
+	if IsHome(path) {
+		if checkFileExists(home + "/.local/share/Trash/") {
 			return home + "/.local/share/Trash/"
 		} else {
+			createTrashDir(home + "/.local/share/Trash/")
+			return home + "/.local/share/Trash/"
+		}
+	}
+
+	if !IsHome(path) {
+		if checkFileExists(getMount(path) + "/.Trash-" + uuid + "/") {
+			return getMount(path) + "/.Trash-" + uuid + "/"
+		} else {
+			createTrashDir(getMount(path) + "/.Trash-" + uuid + "/")
 			return getMount(path) + "/.Trash-" + uuid + "/"
 		}
 	}
 	return ""
-
 }
 
+// TODO: rewrite check and/or create Trash directories per mount point.
 func createTrashDir(path string) {
-	os.Create(path)
+	os.Mkdir(path, 0700)
+	os.Mkdir(path+"files/", 0700)
+	os.Mkdir(path+"info/", 0700)
 }
 
 func getMount(path string) string {

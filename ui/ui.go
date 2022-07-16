@@ -27,12 +27,14 @@ const (
 	browsing state = iota
 	deleting
 	details
+	managing
 	restoring
 )
 
 type Model struct {
 	delete  *deleteModel
 	detail  *detailModel
+	manage  *manageModel
 	restore *restoreModel
 	keyMap  *keys.KeyMap
 	list    list.Model
@@ -71,6 +73,7 @@ func InitialModel() Model {
 	return Model{
 		delete:  newDeleteModel(),
 		detail:  newDetailModel(),
+		manage:  newManageModel(),
 		restore: newRestoreModel(),
 		keyMap:  keys,
 		list:    l,
@@ -219,6 +222,11 @@ func listUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 			m.keyMap.State = "details"
 			m.updateKeybindings()
 
+		case key.Matches(msg, m.keyMap.Manage):
+			m.state = managing
+			m.keyMap.State = "managing"
+			m.updateKeybindings()
+
 		case key.Matches(msg, m.keyMap.Restore):
 			style := m.styles.ErrMsg
 			if m.checkedSelected() < 1 {
@@ -285,6 +293,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case details:
 		return detailUpdate(msg, m)
 
+	case managing:
+		return manageUpdate(msg, m)
+
 	case restoring:
 		return restoreUpdate(msg, m)
 
@@ -305,6 +316,9 @@ func (m Model) View() string {
 
 	case details:
 		return m.detailView()
+
+	case managing:
+		return m.manageView()
 
 	case restoring:
 		return m.restoreView()
