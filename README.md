@@ -50,31 +50,22 @@ Clone the repo.
 Build the package.
 `go build -o gorm main.go`
 
+Trash folders are created at the root of each mount point only when needed.  The
+only exception to this is the user home directory trash files which are stored
+in `~/.local/share/Trash/`.
+
 ## Unimplemented features
-* Prompt and auto generate new mount point trash files.
-* Link handling
-  * Prompt when trashing links (symbolic & hard).
-  * Prompt when restoring links and confirm link is still valid.
+* View multiple mount point trash files.
 
 ## TODO / BUGS
 * TODO: rewrite arg parsing to use the Kingpin package enabling default width
   and height flags.
-* BUG: root directory sizes file cache clearning not working
+* BUG: FIXED: root directory sizes file cache clearing not working
 
 ## Status
-gorm is in a alpha status it is useable for home directory trash and single user
-systems.  I have been adding features almost daily but I do welcome anyone to
-try it and give me there feedback.  Pull requests are welcome but I am still
-merging code from the original application so if you submit a pull request it
-will probably have to be changed as the other features are implemented.  If you
-are interested in helping with the rewrite from C to Go feel free to contact me
-and I can get you access to the other repositories so you can help with the
-rewrite.
-
-The tui interface is basically set but there is plenty of formatting and default
-theme changes that need to be merged.  I have decided to drop the icon support
-and all the icons have been replaced with single word descriptions *ie.* **File**,
-**Directory** or **Link**.  If there is interest in reimplementing the icons, we
-could see about adding a config option or flag to enable them.
+gorm is now in a beta testing phase most of the core features are implemented
+there are still a few yet to be merged but it is now useable on multi user
+systems and provides all the core features ie. trashing, restoration (working
+directory and original path) and detail view of trashed items.
 
 vim: tw=80
