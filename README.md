@@ -60,7 +60,7 @@ in `~/.local/share/Trash/`.
 ## TODO / BUGS
 * TODO: rewrite arg parsing to use the Kingpin package enabling default width
   and height flags.
-* BUG: FIXED: root directory sizes file cache clearing not working
+* BUG: interface conversion: list.Item is nil, not ui.item causing Panic
 
 ## Status
 gorm is now in a beta testing phase most of the core features are implemented

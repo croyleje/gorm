@@ -14,8 +14,8 @@ import (
 
 var (
 	// titleStyle        = lipgloss.NewStyle().MarginLeft(2)
-	itemStyle         = lipgloss.NewStyle().PaddingLeft(4)
-	selectedItemStyle = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
+	itemStyle         = lipgloss.NewStyle().PaddingLeft(6)
+	selectedItemStyle = lipgloss.NewStyle().PaddingLeft(4).Foreground(lipgloss.Color("170"))
 	// paginationStyle   = list.DefaultStyles().PaginationStyle.PaddingLeft(4)
 	helpStyle = list.DefaultStyles().HelpStyle.PaddingLeft(4).PaddingBottom(1)
 	// quitTextStyle     = lipgloss.NewStyle().Margin(1, 0, 2, 4)
@@ -23,8 +23,8 @@ var (
 
 type mountPointDelegate struct{}
 
-func (d mountPointDelegate) Height() int                               { return 1 }
-func (d mountPointDelegate) Spacing() int                              { return 0 }
+func (d mountPointDelegate) Height() int                               { return 2 }
+func (d mountPointDelegate) Spacing() int                              { return 1 }
 func (d mountPointDelegate) Update(msg tea.Msg, m *list.Model) tea.Cmd { return nil }
 func (d mountPointDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
 	i, ok := listItem.(item)

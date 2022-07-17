@@ -226,6 +226,7 @@ func listUpdate(msg tea.Msg, m *Model) (tea.Model, tea.Cmd) {
 			m.updateKeybindings()
 
 		case key.Matches(msg, m.keyMap.Manage):
+			m.updateListItem()
 			m.state = managing
 			m.keyMap.State = "managing"
 			m.updateKeybindings()
