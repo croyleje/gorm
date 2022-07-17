@@ -37,12 +37,13 @@ type Item struct {
 }
 
 func GetEntries() ([]Item, error) {
+
 	if !checkFileExists(trashDir) {
-		GetTrashDir()
+		createTrashDir(trashDir)
 	}
 	file, err := os.Open(trashDir)
 	if err != nil {
-		log.Fatalf("error: %v %v", file, err)
+		log.Fatalf("errorTEST: %v %v", file, err)
 	}
 
 	defer file.Close()
@@ -385,13 +386,18 @@ func GetTrashDir() string {
 		if checkFileExists(getMount(path) + "/.Trash-" + uuid + "/") {
 			return getMount(path) + "/.Trash-" + uuid + "/"
 		} else {
-			createTrashDir(getMount(path) + "/.Trash-" + uuid + "/")
-			return getMount(path) + "/.Trash-" + uuid + "/"
+			if os.Geteuid() != 0 {
+				log.Fatalf("error: user does not have write permission at %s", path)
+			} else {
+				createTrashDir(getMount(path) + "/.Trash-" + uuid + "/")
+				return getMount(path) + "/.Trash-" + uuid + "/"
+			}
 		}
 	}
 	return ""
 }
 
+// TODO: rewrite os.ReadDir range over files/info directories
 func EmptyTrash() {
 	fmt.Println("EMPTY TRASH DIRECTORY:")
 	fmt.Println(GetTrashDir())
@@ -403,30 +409,17 @@ func EmptyTrash() {
 		log.Fatal("error: please select y/n")
 	} else {
 		if strings.Contains(prompt, "y") || strings.Contains(prompt, "Y") {
-			fmt.Println("Yes")
+			fmt.Println("Deleted")
+			os.RemoveAll(GetTrashDir() + "files")
+			os.RemoveAll(GetTrashDir() + "info")
+			os.Create(dirSizesFile)
+			os.Mkdir(GetTrashDir()+"files/", 0700)
+			os.Mkdir(GetTrashDir()+"info/", 0700)
 		} else {
 			fmt.Println("No")
 		}
 	}
-	// os.Create(GetTrashDir() + dirSizesFile)
-
 }
-
-// func GetMounts() []string {
-// 	cmd := exec.Command("lsblk")
-// 	output, _ := cmd.Output()
-// 	parse := strings.Split(string(output), "\n")
-
-// 	var mounts []string
-
-// 	for _, v := range parse {
-// 		if strings.Contains(v, "part") {
-// 			_, m, _ := strings.Cut(v, "part")
-// 			mounts = append(mounts, m)
-// 		}
-// 	}
-// 	return mounts
-// }
 
 func GetMounts() []string {
 	cmd := exec.Command("lsblk", "-n", "-o", "MOUNTPOINT")
@@ -461,20 +454,17 @@ func GetMounts() []string {
 }
 
 func SetTrashDir(path string) {
-	trashDir = path + "files/"
-	trashInfoDir = path + "info/"
-	dirSizesFile = path + "directorysizes"
+	if checkFileExists(path) {
+		trashDir = path + "files/"
+		trashInfoDir = path + "info/"
+		dirSizesFile = path + "directorysizes"
+	} else {
+		createTrashDir(path)
+	}
 }
 
 func ReadDir() string {
 	return trashDir
-}
-
-// TODO: rewrite check and/or create Trash directories per mount point.
-func createTrashDir(path string) {
-	os.Mkdir(path, 0700)
-	os.Mkdir(path+"files/", 0700)
-	os.Mkdir(path+"info/", 0700)
 }
 
 func getMount(path string) string {
@@ -528,4 +518,17 @@ func removeDirSizesEntry(pattern string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+// TODO: rewrite check and/or create Trash directories per mount point.
+func createTrashDir(path string) {
+	err := os.Mkdir(path, 0700)
+	if err != nil {
+
+		log.Fatalf("error: user does not have write permission to %s\nerror: %v", path, err)
+	}
+	os.Mkdir(path+"files/", 0700)
+	os.Mkdir(path+"info/", 0700)
+	os.Create(path + "directorysizes")
+	os.Chmod(path+"directorysizes", 0600)
 }
