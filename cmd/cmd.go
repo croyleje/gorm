@@ -411,6 +411,8 @@ func GetTrashDir() string {
 func GetMounts() []string {
 	cmd := exec.Command("lsblk", "-n", "-o", "MOUNTPOINT")
 	// cmd := exec.Command("lsblk")
+	uid := os.Geteuid()
+	uuid := fmt.Sprintf("%d", uid)
 	output, _ := cmd.Output()
 	parse := strings.Split(string(output), "\n")
 
@@ -422,17 +424,20 @@ func GetMounts() []string {
 			mounts = append(mounts, v)
 		}
 	}
-	var test []string
+	var points []string
+	home, _ := os.UserHomeDir()
+	home += "/.local/share/Trash/"
+	points = append(points, home)
 	for _, v := range mounts {
 		if strings.Compare(v, "/") == 0 {
-			test = append(test, v)
+			points = append(points, v)
 		} else {
-			v = v + "/.Trash-1000" + "/"
-			test = append(test, v)
+			v = v + "/.Trash-" + uuid + "/"
+			points = append(points, v)
 		}
 	}
 
-	return test
+	return points
 }
 
 func SetTrashDir(path string) {

@@ -77,6 +77,6 @@ func (d itemDelegate) ShortHelp() []key.Binding {
 
 func (d itemDelegate) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
-		{d.keys.Delete, d.keys.Detail, d.keys.Restore, d.keys.SelectAll},
+		{d.keys.Delete, d.keys.Detail, d.keys.Restore, d.keys.SelectAll, d.keys.Manage},
 	}
 }
