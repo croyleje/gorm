@@ -392,10 +392,47 @@ func GetTrashDir() string {
 	return ""
 }
 
-func GetMounts() []string {
-	test := []string{"/mnt/backup/.Trash-1000/", "two", "three"}
-	return test
+// func GetMounts() []string {
+// 	cmd := exec.Command("lsblk")
+// 	output, _ := cmd.Output()
+// 	parse := strings.Split(string(output), "\n")
 
+// 	var mounts []string
+
+// 	for _, v := range parse {
+// 		if strings.Contains(v, "part") {
+// 			_, m, _ := strings.Cut(v, "part")
+// 			mounts = append(mounts, m)
+// 		}
+// 	}
+// 	return mounts
+// }
+
+func GetMounts() []string {
+	cmd := exec.Command("lsblk", "-n", "-o", "MOUNTPOINT")
+	// cmd := exec.Command("lsblk")
+	output, _ := cmd.Output()
+	parse := strings.Split(string(output), "\n")
+
+	var mounts []string
+
+	for _, v := range parse {
+		if strings.Contains(v, "/") {
+			v = strings.Trim(v, " ")
+			mounts = append(mounts, v)
+		}
+	}
+	var test []string
+	for _, v := range mounts {
+		if strings.Compare(v, "/") == 0 {
+			test = append(test, v)
+		} else {
+			v = v + "/.Trash-1000" + "/"
+			test = append(test, v)
+		}
+	}
+
+	return test
 }
 
 func SetTrashDir(path string) {
