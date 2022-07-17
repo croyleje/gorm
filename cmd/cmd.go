@@ -392,6 +392,26 @@ func GetTrashDir() string {
 	return ""
 }
 
+func EmptyTrash() {
+	fmt.Println("EMPTY TRASH DIRECTORY:")
+	fmt.Println(GetTrashDir())
+	fmt.Println("IMPORTANT: This can NOT be undone.")
+	var prompt string
+	fmt.Print("Please confirm (y/N): ")
+	fmt.Scanln(&prompt)
+	if len(prompt) > 1 {
+		log.Fatal("error: please select y/n")
+	} else {
+		if strings.Contains(prompt, "y") || strings.Contains(prompt, "Y") {
+			fmt.Println("Yes")
+		} else {
+			fmt.Println("No")
+		}
+	}
+	// os.Create(GetTrashDir() + dirSizesFile)
+
+}
+
 // func GetMounts() []string {
 // 	cmd := exec.Command("lsblk")
 // 	output, _ := cmd.Output()

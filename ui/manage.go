@@ -79,6 +79,7 @@ func manageUpdate(msg tea.Msg, m Model) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, m.keyMap.Cancel):
+			m.manage.list.Select(0)
 			m.state = browsing
 			m.keyMap.State = "browsing"
 			m.updateKeybindings()

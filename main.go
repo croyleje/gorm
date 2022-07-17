@@ -26,6 +26,7 @@ func initState(debug bool) (ui.Model, *os.File) {
 
 func main() {
 	debug := flag.Bool("debug", false, "enables error log ./debug.log")
+	empty := flag.Bool("empty", false, "empty trash")
 	list := flag.Bool("list", false, "cli list of item")
 	put := flag.Bool("put", false, "move file to trash")
 
@@ -39,6 +40,9 @@ func main() {
 
 	case *put:
 		cmd.TrashPut(flag.Args())
+
+	case *empty:
+		cmd.EmptyTrash()
 
 	default:
 		if logger != nil {
